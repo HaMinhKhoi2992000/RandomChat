@@ -1,11 +1,16 @@
 package client.controller;
 
+import client.StartClient;
+import client.view.guiEnums.GUIName;
+import client.view.guiEnums.MainMenuState;
 import shared.model.Data;
+import shared.model.Message;
 import shared.type.DataType;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
@@ -193,13 +198,131 @@ public class SocketHandler {
         }
     }
 
+    private void onReceiveResultPairUp(String received) {
+        String[] splitted = received.split(";");
+        String status = splitted[0];
+
+        if (status.equals("failed")) {
+            String failedMsg = splitted[1];
+            int option = JOptionPane.showConfirmDialog(StartClient.mainMenuGUI, failedMsg + ". Tiếp tục ghép đôi?", "Ghép đôi thất bại",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+
+            // stop pairing
+            // reset display state of main menu
+            StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+
+            if(option == JOptionPane.YES_OPTION) {
+                // continue pairing
+                pairUp();
+                return;
+            }
+        } else if (status.equals("success")) {
+            // reset display state of main menu
+            StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+
+            System.out.println("Ghép đôi thành công");
+        }
+    }
+
+    private void onReceivePairUpWaiting(String received) {
+        StartClient.mainMenuGUI.setDisplayState(MainMenuState.FINDING_STRANGER);
+    }
+
+    private void onReceiveCancelPairUp(String received) {
+        StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+    }
+
+    private void onReceiveRequestPairUp(String received) {
+        // show stranger found state
+        StartClient.mainMenuGUI.foundStranger(received);
+    }
+
+    private void onReceiveJoinChatRoom(String received) {
+        // change GUI
+        StartClient.closeGUI(GUIName.MAIN_MENU);
+        StartClient.openGUI(GUIName.CHAT_ROOM);
+        StartClient.chatRoomGUI.setClients(this.nickname, received);
+    }
+
+    private void onReceiveChatMessage(String received) {
+        // convert received JSON message to Message
+        Message message = Message.parse(received);
+        StartClient.chatRoomGUI.addChatMessage(message);
+    }
+
+    private void onReceiveLeaveChatRoom(String received) {
+        // change GUI
+        StartClient.closeGUI(GUIName.CHAT_ROOM);
+        StartClient.openGUI(GUIName.MAIN_MENU);
+    }
+
+    private void onReceiveCloseChatRoom(String received) {
+        // change GUI
+        StartClient.closeGUI(GUIName.CHAT_ROOM);
+        StartClient.openGUI(GUIName.MAIN_MENU);
+
+        // show notification
+        JOptionPane.showMessageDialog(
+                StartClient.mainMenuGUI,
+                "Kết thúc trò chuyện do " + received, "Đóng",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void onReceiveLogout(String received) {
+        // xóa nickname
+        this.nickname = null;
+
+        // chuyển sang login GUI
+        StartClient.closeGUI(GUIName.MAIN_MENU);
+        StartClient.openGUI(GUIName.LOGIN);
+    }
+
+    private void onReceiveExit(String received) {
+        // đóng tất cả GUIs
+        StartClient.closeAllGUIs();
+    }
+
+    public void login(String nickname) {
+        sendData(DataType.LOGIN, nickname);
+    }
+
+    public void pairUp() {
+        sendData(DataType.PAIR_UP, null);
+    }
+
+    public void acceptPairUp() {
+        sendData(DataType.PAIR_UP_RESPONSE, "yes");
+    }
+
+    public void declinePairUp() {
+        sendData(DataType.PAIR_UP_RESPONSE, "no");
+    }
+
+    public void cancelPairUp() {
+        sendData(DataType.CANCEL_PAIR_UP, null);
+    }
+
+    public void sendChatMessage(Message message) {
+        sendData(DataType.CHAT_MESSAGE, message.toJSONString());
+    }
+
+    public void leaveChatRoom() {
+        sendData(DataType.LEAVE_CHAT_ROOM, null);
+    }
+
+    public void logout() {
+        sendData(DataType.LOGOUT, null);
+    }
+
+    public void exit() {
+        sendData(DataType.EXIT, null);
+    }
+
     public String getNickname() {
         return nickname;
     }
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-    public void login(String nickname) {
-        sendData(DataType.LOGIN, nickname);
     }
 }

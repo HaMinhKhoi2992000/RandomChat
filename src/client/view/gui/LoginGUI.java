@@ -1,6 +1,6 @@
 package client.view.gui;
 
-import com.stranger_chat_app.client.RunClient;
+import client.StartClient;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +24,7 @@ public class LoginGUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-
+        setVisible(true);
         initComponents();
 
         // default pgbLoading is hidden
@@ -46,7 +46,7 @@ public class LoginGUI extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                RunClient.socketHandler.exit();
+                StartClient.socketHandler.exit();
             }
         });
 
@@ -68,7 +68,7 @@ public class LoginGUI extends JFrame {
                         // Chờ server kiểm tra đăng nhập
                         setLoading(true, "Đang xử lý...");
 
-                        RunClient.socketHandler.login(nickname);
+                        StartClient.socketHandler.login(nickname);
                     }
                 }
             }
@@ -91,7 +91,7 @@ public class LoginGUI extends JFrame {
                     // Chờ server kiểm tra đăng nhập
                     setLoading(true, "Đang xử lý...");
 
-                    RunClient.socketHandler.login(nickname);
+                    StartClient.socketHandler.login(nickname);
                 }
             }
         });

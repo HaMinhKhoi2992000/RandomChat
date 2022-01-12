@@ -79,7 +79,7 @@ public class ChatRoomGUI extends JFrame {
         if(!content.equals("")) {
             Message message = new Message(you, stranger, content);
 
-           // StartClient.socketHandler.sendChatMessage(message);
+            StartClient.socketHandler.sendChatMessage(message);
             txtMessage.setText("");
 
             try {
@@ -146,7 +146,7 @@ public class ChatRoomGUI extends JFrame {
                 if (JOptionPane.showConfirmDialog(ChatRoomGUI.this,
                         "Bạn có chắc muốn thoát phòng?", "Thoát phòng?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    //RunClient.socketHandler.leaveChatRoom();
+                    StartClient.socketHandler.leaveChatRoom();
                 }
             }
         });

@@ -1,8 +1,8 @@
 package client.view.gui;
 
-import com.stranger_chat_app.client.RunClient;
-import com.stranger_chat_app.client.view.enums.MainMenuState;
-import com.stranger_chat_app.shared.helper.CountdownTimer;
+import client.StartClient;
+import client.view.guiEnums.MainMenuState;
+import shared.utils.CountdownTimer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,7 @@ public class MainMenuGUI extends JFrame {
 
     public MainMenuGUI() {
         super();
-        setTitle("Màn hình chính - Bạn: " + RunClient.socketHandler.getNickname());
+       // setTitle("Màn hình chính - Bạn: " + StartClient.socketHandler.getNickname());
         setContentPane(pnlMain);
         setSize(540, 340);
         setLocationRelativeTo(null);
@@ -109,7 +109,7 @@ public class MainMenuGUI extends JFrame {
 
                     // automatically decline if the time has passed without accepting
                     if (!isAcceptingPairUp) {
-                        RunClient.socketHandler.declinePairUp();
+                        StartClient.socketHandler.declinePairUp();
                     }
                     return null;
                 },
@@ -170,21 +170,21 @@ public class MainMenuGUI extends JFrame {
         btnLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RunClient.socketHandler.logout();
+                StartClient.socketHandler.logout();
             }
         });
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                RunClient.socketHandler.logout();
+                StartClient.socketHandler.logout();
             }
         });
 
         btnPairUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RunClient.socketHandler.pairUp();
+                StartClient.socketHandler.pairUp();
             }
         });
 
@@ -192,21 +192,21 @@ public class MainMenuGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setDisplayState(MainMenuState.WAITING_STRANGER_ACCEPT);
-                RunClient.socketHandler.acceptPairUp();
+                StartClient.socketHandler.acceptPairUp();
             }
         });
 
         btnDecline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RunClient.socketHandler.declinePairUp();
+                StartClient.socketHandler.declinePairUp();
             }
         });
 
         btnCancelPairUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RunClient.socketHandler.cancelPairUp();
+                StartClient.socketHandler.cancelPairUp();
             }
         });
     }

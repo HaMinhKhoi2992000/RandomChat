@@ -1,7 +1,12 @@
 package client;
 
 import client.controller.SocketHandler;
+import client.view.gui.ChatRoomGUI;
+import client.view.gui.LoginGUI;
+import client.view.gui.MainMenuGUI;
+import client.view.guiEnums.GUIName;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -14,8 +19,13 @@ public class StartClient {
     public static SocketHandler socketHandler;
     private String hostname = "localhost";
     private int port = 5003;
+
+    public static LoginGUI loginGUI;
+    public static MainMenuGUI mainMenuGUI;
+    public static ChatRoomGUI chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
+        initGUIs();
     }
 
     public void start() {
@@ -27,6 +37,75 @@ public class StartClient {
             // establish connection
             boolean isConnected = StartClient.socketHandler.connect(hostname, port);
         }).start();
+    }
+
+    private void onSuccess() {
+        // Kết nối thành công nhưng vẫn chờ server gửi thông báo đã nhận secret key
+        // Cho phép client đăng nhập khi nhận được phản hồi từ server
+
+        loginGUI.setLoading(true, "Đang chờ bảo mật...");;
+    }
+
+    private void onFailed(String failedMsg) {
+        loginGUI.setLoading(false, null);
+        JOptionPane.showMessageDialog(loginGUI, failedMsg, "Lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+        System.exit(0);
+    }
+
+    public void initGUIs() {
+        loginGUI = new LoginGUI();
+       // mainMenuGUI = new MainMenuGUI();
+       // chatRoomGUI = new ChatRoomGUI();
+    }
+
+    public static void openGUI(GUIName guiName) {
+        if (guiName != null) {
+            switch (guiName) {
+                case LOGIN:
+                    loginGUI = new LoginGUI();
+                    loginGUI.setVisible(true);
+                    break;
+
+                case MAIN_MENU:
+                    mainMenuGUI = new MainMenuGUI();
+                    mainMenuGUI.setVisible(true);
+                    break;
+
+                case CHAT_ROOM:
+                    chatRoomGUI = new ChatRoomGUI();
+                    chatRoomGUI.setVisible(true);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public static void closeGUI(GUIName guiName) {
+        if (guiName != null) {
+            switch (guiName) {
+                case LOGIN:
+                    loginGUI.dispose();
+                    break;
+
+                case MAIN_MENU:
+                    mainMenuGUI.dispose();
+                    break;
+
+                case CHAT_ROOM:
+                    chatRoomGUI.dispose();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public static void closeAllGUIs() {
+        loginGUI.dispose();
+        mainMenuGUI.dispose();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
