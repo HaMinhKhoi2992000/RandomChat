@@ -12,6 +12,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,9 +59,15 @@ public class SocketHandler {
         Data receivedData;
         String receivedContent = null;
 
+        String input;
+        System.out.println("Nhập tên: ");
+        Scanner scanner = new Scanner(System.in);
+        input = scanner.nextLine();
+
+        sendData(DataType.LOGIN, input);
+
         try {
             while (isRunning) {
-                System.out.println(".");
                 receivedData = (Data) in.readObject();
 
                 if (receivedData != null) {
@@ -77,7 +84,7 @@ public class SocketHandler {
                             break;
 
                         case LOGIN:
-                            //onReceiveLogin(receivedContent);
+                            onReceiveLogin(receivedContent);
                             break;
 
                         case PAIR_UP_WAITING:
@@ -155,6 +162,19 @@ public class SocketHandler {
         }
     }
 
+    private void onReceiveLogin(String received) {
+        String[] splitted = received.split(";");
+        String status = splitted[0];
+        System.out.println(received);
+        if (status.equals("failed")) {
+            String failedMsg = splitted[1];
+
+
+        } else if (status.equals("success")) {
+            this.nickname = splitted[1];
+        }
+    }
+
     private void sendData(DataType dataType, String content) {
         Data data;
         String encryptedContent = null;
@@ -173,6 +193,12 @@ public class SocketHandler {
         }
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
     public void login(String nickname) {
         sendData(DataType.LOGIN, nickname);
     }

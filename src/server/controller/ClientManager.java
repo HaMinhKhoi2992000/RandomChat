@@ -26,9 +26,17 @@ public class ClientManager {
         return false;
     }
 
-
     public int getSize() {
         return clients.size();
+    }
+
+    public Client find(String nickname) {
+        for (Client client : clients) {
+            if (client.getNickname() != null && client.getNickname().equals(nickname)) {
+                return client;
+            }
+        }
+        return null;
     }
 }
 

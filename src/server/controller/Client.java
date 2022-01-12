@@ -3,6 +3,7 @@ package server.controller;
 import server.StartServer;
 import shared.model.Data;
 import shared.type.DataType;
+import shared.type.StringMessage;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -43,12 +44,12 @@ public class Client implements Runnable {
                 receivedData = (Data) in.readObject();
 
                 if (receivedData != null) {
-                    sendData(DataType.CANCEL_PAIR_UP, "HELLO");
-                    receivedContent = receivedData.getContent();
-                    System.out.println(receivedContent);
+//                    sendData(DataType.CANCEL_PAIR_UP, "HELLO");
+                   receivedContent = receivedData.getContent();
+//                    System.out.println(receivedContent);
                     switch (receivedData.getDataType()) {
                         case LOGIN:
-                            //onReceiveLogin(receivedContent);
+                            onReceiveLogin(receivedContent);
                             break;
 
                         case PAIR_UP:
@@ -114,6 +115,19 @@ public class Client implements Runnable {
         }
     }
 
+    private void onReceiveLogin(String received) {
+        String status = "failed;";
+        Client existedClient = StartServer.clientManager.find(received);
+        if (existedClient == null) {
+            status = "success;";
+            this.nickname = received;
+            System.out.println(this.nickname);
+            sendData(DataType.LOGIN, status + nickname);
+        } else {
+            sendData(DataType.LOGIN, status + StringMessage.NICKNAME_HAS_BEEN_USED);
+        }
+    }
+
     public void sendData(DataType dataType, String content) {
         Data data;
         data = new Data(dataType, content);
@@ -124,5 +138,21 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Client getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Client stranger) {
+        this.partner = partner;
     }
 }
