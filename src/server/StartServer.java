@@ -40,11 +40,10 @@ public class StartServer {
 
                     // Dùng biến socket để lưu lại client vừa kết nối
                     Socket socket = server.accept();
-
+                    System.out.println("Accepted a client");
                     // Tạo client runable
                     Client client = new Client(socket);
                     clientManager.add(client);
-
                     // execute client runnable
                     executor.execute(client);
 
