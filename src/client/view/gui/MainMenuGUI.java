@@ -34,7 +34,7 @@ public class MainMenuGUI extends JFrame {
 
     public MainMenuGUI() {
         super();
-       // setTitle("Màn hình chính - Bạn: " + StartClient.socketHandler.getNickname());
+        setTitle("Main Menu - Nickname bạn chọn: " + StartClient.socketHandler.getNickname());
         setContentPane(pnlMain);
         setSize(540, 340);
         setLocationRelativeTo(null);
@@ -184,6 +184,7 @@ public class MainMenuGUI extends JFrame {
         btnPairUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("CLicked");
                 StartClient.socketHandler.pairUp();
             }
         });

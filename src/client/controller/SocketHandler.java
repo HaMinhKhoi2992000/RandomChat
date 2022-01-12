@@ -64,13 +64,6 @@ public class SocketHandler {
         Data receivedData;
         String receivedContent = null;
 
-        String input;
-        System.out.println("Nhập tên: ");
-        Scanner scanner = new Scanner(System.in);
-        input = scanner.nextLine();
-
-        sendData(DataType.LOGIN, input);
-
         try {
             while (isRunning) {
                 receivedData = (Data) in.readObject();
@@ -80,57 +73,49 @@ public class SocketHandler {
                         receivedContent = receivedData.getContent();
 
                     switch (receivedData.getDataType()) {
-                        case PUBLIC_KEY:
-
-                            break;
-
-                        case RECEIVED_SECRET_KEY:
-                            //onReceivedSecretKey(receivedContent);
-                            break;
-
                         case LOGIN:
                             onReceiveLogin(receivedContent);
                             break;
 
                         case PAIR_UP_WAITING:
-                           // onReceivePairUpWaiting(receivedContent);
+                            onReceivePairUpWaiting(receivedContent);
                             break;
 
                         case CANCEL_PAIR_UP:
-                            //onReceiveCancelPairUp(receivedContent);
+                            onReceiveCancelPairUp(receivedContent);
                             System.out.println(receivedContent);
                             break;
 
                         case REQUEST_PAIR_UP:
-                           // onReceiveRequestPairUp(receivedContent);
+                            onReceiveRequestPairUp(receivedContent);
                             break;
 
                         case RESULT_PAIR_UP:
-                           // onReceiveResultPairUp(receivedContent);
+                            onReceiveResultPairUp(receivedContent);
                             break;
 
                         case JOIN_CHAT_ROOM:
-                            //onReceiveJoinChatRoom(receivedContent);
+                            onReceiveJoinChatRoom(receivedContent);
                             break;
 
                         case CHAT_MESSAGE:
-                          //  onReceiveChatMessage(receivedContent);
+                            onReceiveChatMessage(receivedContent);
                             break;
 
                         case LEAVE_CHAT_ROOM:
-                            //onReceiveLeaveChatRoom(receivedContent);
+                            onReceiveLeaveChatRoom(receivedContent);
                             break;
 
                         case CLOSE_CHAT_ROOM:
-                           // onReceiveCloseChatRoom(receivedContent);
+                            onReceiveCloseChatRoom(receivedContent);
                             break;
 
                         case LOGOUT:
-                            //onReceiveLogout(receivedContent);
+                            onReceiveLogout(receivedContent);
                             break;
 
                         case EXIT:
-                           // onReceiveExit(receivedContent);
+                            onReceiveExit(receivedContent);
                             isRunning = false;
                             break;
                     }
@@ -170,13 +155,18 @@ public class SocketHandler {
     private void onReceiveLogin(String received) {
         String[] splitted = received.split(";");
         String status = splitted[0];
-        System.out.println(received);
+
         if (status.equals("failed")) {
             String failedMsg = splitted[1];
-
+            StartClient.loginGUI.onFailed(failedMsg);
 
         } else if (status.equals("success")) {
             this.nickname = splitted[1];
+
+            // tắt Login GUI khi client đăng nhập thành công
+            StartClient.closeGUI(GUIName.LOGIN);
+            // mở Main Menu GUI
+            StartClient.openGUI(GUIName.MAIN_MENU);
         }
     }
 

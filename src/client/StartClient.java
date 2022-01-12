@@ -25,6 +25,10 @@ public class StartClient {
     public static ChatRoomGUI chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
+        // Customize LookAndFeel UI
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch(Exception ignored){}
         initGUIs();
     }
 
@@ -54,8 +58,8 @@ public class StartClient {
 
     public void initGUIs() {
         loginGUI = new LoginGUI();
-       // mainMenuGUI = new MainMenuGUI();
-       // chatRoomGUI = new ChatRoomGUI();
+        mainMenuGUI = new MainMenuGUI();
+        chatRoomGUI = new ChatRoomGUI();
     }
 
     public static void openGUI(GUIName guiName) {

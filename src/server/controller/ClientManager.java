@@ -38,5 +38,28 @@ public class ClientManager {
         }
         return null;
     }
+
+    public void removeRejectedClient (String nickname) {
+        for (Client client : clients) {
+            if (client.getRejectedClients().contains(nickname)) {
+                client.getRejectedClients().remove(nickname);
+            }
+        }
+    }
+
+    public Client findWaitingClient(Client currentClient, Set<String> excludedNicknames) {
+        for (Client client : clients) {
+            if (client != currentClient && client.isWaiting()) {
+                if (excludedNicknames.contains(client.getNickname()))
+                    continue;
+                else if (client.getRejectedClients().contains(currentClient.getNickname()))
+                    continue;
+                else
+                    return client;
+            }
+        }
+
+        return null;
+    }
 }
 

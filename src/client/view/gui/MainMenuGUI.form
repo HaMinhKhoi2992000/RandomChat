@@ -25,7 +25,6 @@
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <icon value="com/stranger_chat_app/client/asset/icons8-logout-24.png"/>
               <text value="Đăng xuất"/>
             </properties>
           </component>
@@ -161,7 +160,6 @@
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <icon value="com/stranger_chat_app/client/asset/icons8_cancel_24px.png"/>
                   <text value="Hủy"/>
                 </properties>
               </component>
@@ -227,7 +225,6 @@
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <icon value="com/stranger_chat_app/client/asset/icons8_cancel_24px.png"/>
               <text value="Từ chối"/>
             </properties>
           </component>
@@ -246,7 +243,6 @@
               <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <icon value="com/stranger_chat_app/client/asset/icons8_ok_24px.png"/>
               <text value="Chấp nhận"/>
             </properties>
           </component>
@@ -332,7 +328,6 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <icon value="com/stranger_chat_app/client/asset/icons8-circled-play-24.png"/>
               <text value="Ghép đôi"/>
             </properties>
           </component>

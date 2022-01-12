@@ -110,16 +110,16 @@ public class ChatRoomGUI extends JFrame {
         lblStatus.setText("Online");
         lblStatus.setForeground(Color.GREEN);
         lblStatus.setOpaque(true);
-        JLabel icon = new JLabel();
-        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/stranger_chat_app/client/asset/icons8-anonymous-24.png"))
-                .getImage().getScaledInstance(24, 24, Image.SCALE_DEFAULT));
-        icon.setIcon(imageIcon);
-        icon.setOpaque(true);
+//        JLabel icon = new JLabel();
+//        ImageIcon imageIcon = new ImageIcon(new ImageIcon(getClass().getResource("/com/stranger_chat_app/client/asset/icons8-anonymous-24.png"))
+//                .getImage().getScaledInstance(24, 24, Image.SCALE_DEFAULT));
+//        icon.setIcon(imageIcon);
+//        icon.setOpaque(true);
 
         userPanel.add(lblStranger);
         userPanel.add(lblStatus);
         topPanel.add(userPanel, BorderLayout.CENTER);
-        topPanel.add(icon, BorderLayout.WEST);
+       // topPanel.add(icon, BorderLayout.WEST);
 
         doc = (HTMLDocument) messageArea.getStyledDocument();
         messageArea.setText("<br/>");
