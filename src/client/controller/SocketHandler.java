@@ -1,6 +1,7 @@
 package client.controller;
 
 import shared.model.Data;
+import shared.type.DataType;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -152,5 +153,27 @@ public class SocketHandler {
                 exception.printStackTrace();
             }
         }
+    }
+
+    private void sendData(DataType dataType, String content) {
+        Data data;
+        String encryptedContent = null;
+
+        if (content != null) {
+            data = new Data(dataType, content);
+        } else {
+            data = new Data(dataType, content);
+        }
+
+        try {
+            out.writeObject(data);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void login(String nickname) {
+        sendData(DataType.LOGIN, nickname);
     }
 }

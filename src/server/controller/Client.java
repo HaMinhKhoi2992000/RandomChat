@@ -18,6 +18,12 @@ public class Client implements Runnable {
     private ObjectOutput out;
     private ObjectInput in;
 
+    private String nickname;
+    Client partner;
+
+    private String acceptPairUp = "";     // giá trị: "yes", "no", ""
+    private boolean isWaiting = false;
+
     public Client(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
 
