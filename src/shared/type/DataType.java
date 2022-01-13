@@ -5,8 +5,8 @@ public enum DataType {
     PAIR_UP_WAITING,
     REQUEST_PAIR_UP,
     RESULT_PAIR_UP,
-    JOIN_CHAT_ROOM,
-    CLOSE_CHAT_ROOM,
+    JOIN_ROOM,
+    CLOSE_ROOM,
     ERROR,
 
     //    Client Request
@@ -15,7 +15,7 @@ public enum DataType {
     CANCEL_PAIR_UP,
     PAIR_UP_RESPONSE,
     CHAT_MESSAGE,
-    LEAVE_CHAT_ROOM,
+    LEAVE_ROOM,
     LOGOUT,
     EXIT,
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CountdownTimer {
+public class Countdown {
     int timeLimit;
     int currentTick;
     int tickInterval;
@@ -15,7 +15,7 @@ public class CountdownTimer {
 
     boolean isPaused = false;
 
-    public CountdownTimer(int _timeLimit) {
+    public Countdown(int _timeLimit) {
         timeLimit = _timeLimit;
         currentTick = _timeLimit;
         tickInterval = 1; // default is 1

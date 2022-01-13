@@ -1,6 +1,6 @@
 package client;
 
-import client.controller.SocketHandler;
+import client.controller.ClientSocketHandler;
 import client.view.gui.*;
 import client.view.guiEnums.GUIName;
 
@@ -12,7 +12,7 @@ public class StartClient {
     private static Socket socket;
     private static BufferedWriter out;
     private static BufferedReader in;
-    public static SocketHandler socketHandler;
+    public static ClientSocketHandler clientSocketHandler;
     private String hostname = "localhost";
     private int port = 5003;
 
@@ -20,7 +20,7 @@ public class StartClient {
     public static MainMenu mainMenuGUI;
     public static ChatRoom chatRoomGUI;
     public StartClient() {
-        socketHandler = new SocketHandler();
+        clientSocketHandler = new ClientSocketHandler();
         initGUIs();
     }
 
@@ -31,7 +31,7 @@ public class StartClient {
     public void connectToServer(String hostname, int port) {
         new Thread(() -> {
             // establish connection
-            boolean isConnected = StartClient.socketHandler.connect(hostname, port);
+            boolean isConnected = StartClient.clientSocketHandler.connect(hostname, port);
         }).start();
     }
 

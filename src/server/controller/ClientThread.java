@@ -18,10 +18,11 @@ public class ClientThread implements Runnable {
 
     private String nickname;
     ClientThread partner;
-    private volatile Set<String> refusedClients = new HashSet<>();
+
 
     private String acceptPairUp = "";     // giá trị: "yes", "no", ""
     private boolean isWaiting = false;
+    private volatile Set<String> refusedClients = new HashSet<>();
 
     public ClientThread(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
@@ -47,33 +48,31 @@ public class ClientThread implements Runnable {
                         case LOGIN:
                             handleLogin(receivedContent);
                             break;
+                        case CHAT_MESSAGE:
+                            handleChatMessage(receivedContent);
+                            break;
 
+                        case LEAVE_ROOM:
+                            handleLeaveChatRoom(receivedContent);
+                            break;
                         case PAIR_UP:
                             handlePairUp(receivedContent);
                             break;
 
                         case CANCEL_PAIR_UP:
-                            onReceiveCancelPairUp(receivedContent);
+                            handleCancelPairUp(receivedContent);
                             break;
 
                         case PAIR_UP_RESPONSE:
-                            onReceivePairUpResponse(receivedContent);
-                            break;
-
-                        case CHAT_MESSAGE:
-                            onReceiveChatMessage(receivedContent);
-                            break;
-
-                        case LEAVE_CHAT_ROOM:
-                            onReceiveLeaveChatRoom(receivedContent);
+                            handlePairUpResponse(receivedContent);
                             break;
 
                         case LOGOUT:
-                            onReceiveLogout(receivedContent);
+                            handleLogout(receivedContent);
                             break;
 
                         case EXIT:
-                            onReceiveExit(receivedContent);
+                            handleExit(receivedContent);
                             isRunning = false;
                             break;
                     }
@@ -110,6 +109,7 @@ public class ClientThread implements Runnable {
         }
     }
 
+
     private void handleLogin(String received) {
         String status = "failed;";
 
@@ -131,14 +131,14 @@ public class ClientThread implements Runnable {
         ClientThread partner = StartServer.clientManager.findWaitingClient(this, refusedClients);
 
         if (partner == null) {
-            // đặt cờ là đang đợi ghép cặp
+            // set trạng thái đang chờ ghép cặp
             this.isWaiting = true;
 
-            // client hiển thị trạng thái đợi ghép cặp
+            // Gửi lệnh hiện giao diện đợi cho client
             sendData(DataType.PAIR_UP_WAITING, null);
 
         } else {
-            // nếu có người cũng đang đợi ghép đôi thì bắt đầu hỏi yêu cầu ghép cặp
+            // Khi tìm thấy có người cũng đang đợi thì bắt đầu hỏi yêu cầu ghép cặp
             // trong lúc hỏi thì phải tắt trạng thái đợi của 2 bên (để nếu client khác ghép đôi thì sẽ tránh việc bị ghép đè)
             this.isWaiting = false;
             partner.isWaiting = false;
@@ -147,13 +147,13 @@ public class ClientThread implements Runnable {
             this.partner = partner;
             partner.partner = this;
 
-            // trả thông tin đối phương về cho 2 clients
+            // trả thông tin người đã pair về cho 2 clients
             this.sendData(DataType.REQUEST_PAIR_UP, partner.nickname);
             partner.sendData(DataType.REQUEST_PAIR_UP, this.nickname);
         }
     }
 
-    private void onReceiveCancelPairUp(String received) {
+    private void handleCancelPairUp(String received) {
         // gỡ cờ đang đợi ghép cặp
         this.isWaiting = false;
 
@@ -161,7 +161,7 @@ public class ClientThread implements Runnable {
         sendData(DataType.CANCEL_PAIR_UP, null);
     }
 
-    private void onReceivePairUpResponse(String received) {
+    private void handlePairUpResponse(String received) {
         // save accept pair status
         this.acceptPairUp = received;
 
@@ -197,8 +197,8 @@ public class ClientThread implements Runnable {
             partner.sendData(DataType.RESULT_PAIR_UP, "success");
 
             // send join chat room status to client
-            sendData(DataType.JOIN_CHAT_ROOM, partner.nickname);
-            partner.sendData(DataType.JOIN_CHAT_ROOM, this.nickname);
+            sendData(DataType.JOIN_ROOM, partner.nickname);
+            partner.sendData(DataType.JOIN_ROOM, this.nickname);
 
             // reset acceptPairMatchStatus
             this.acceptPairUp = "";
@@ -206,7 +206,7 @@ public class ClientThread implements Runnable {
         }
     }
 
-    private void onReceiveChatMessage(String received) {
+    private void handleChatMessage(String received) {
         Message message = Message.parse(received);
         ClientThread partner = StartServer.clientManager.find(message.getRecipient());
 
@@ -216,23 +216,22 @@ public class ClientThread implements Runnable {
         }
     }
 
-    private void onReceiveLeaveChatRoom(String received) {
-        // reset rejected clients of both
+    private void handleLeaveChatRoom(String received) {
+        // xóa danh sách client đã từ chối
         this.refusedClients.clear();
         this.partner.refusedClients.clear();
 
-        // notify the stranger that you have exited
-        this.partner.sendData(DataType.CLOSE_CHAT_ROOM, this.nickname + " đã thoát phòng");
+        // Thông báo cho người kia là bạn đã thoát
+        this.partner.sendData(DataType.CLOSE_ROOM, this.nickname + " đã thoát phòng");
 
-        // TODO leave chat room
-        sendData(DataType.LEAVE_CHAT_ROOM, null);
+        sendData(DataType.LEAVE_ROOM, null);
     }
 
-    private void onReceiveLogout(String received) {
-        // remove this client nickname from the rejected list of all clients
-        StartServer.clientManager.removeRejectedClient(this.nickname);
+    private void handleLogout(String received) {
+        // xóa tên này khỏi tên bị từ chối của tất cả client khác
+        StartServer.clientManager.removeRefusedClient(this.nickname);
 
-        // reset all infos
+        // xóa và thiết lập lại tất cả thông tin
         this.nickname = null;
         this.isWaiting = false;
         this.refusedClients.clear();
@@ -240,7 +239,7 @@ public class ClientThread implements Runnable {
         sendData(DataType.LOGOUT, null);
     }
 
-    private void onReceiveExit(String received) {
+    private void handleExit(String received) {
         // reset nickname and waiting status
         this.nickname = null;
         this.isWaiting = false;
@@ -248,12 +247,6 @@ public class ClientThread implements Runnable {
         sendData(DataType.EXIT, null);
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
     public ClientThread getPartner() {
         return partner;
     }
@@ -266,4 +259,12 @@ public class ClientThread implements Runnable {
     public void setPartner(ClientThread stranger) {
         this.partner = partner;
     }
+    public String getNickname() {
+        return nickname;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+
 }

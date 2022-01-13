@@ -14,27 +14,27 @@ import javax.swing.border.*;
 
 import client.StartClient;
 import client.view.guiEnums.MainMenuStatus;
-import shared.utils.CountdownTimer;
+import shared.utils.Countdown;
 
 /**
  * @author Khoi Ha
  */
 public class MainMenu extends JFrame {
 
-    CountdownTimer acceptPairUpTimer;
-    CountdownTimer waitingPairUpTimer;
+    Countdown acceptPairUpTimer;
+    Countdown waitingPairUpTimer;
     final int acceptWaitingTime = 15;
 
     boolean isAcceptingPairUp = false;
 
     public MainMenu() {
         initComponents();
-        setTitle("Màn hình chính _ Nickname của bạn: " + StartClient.socketHandler.getNickname());
+        setTitle("Màn hình chính _ Nickname của bạn: " + StartClient.clientSocketHandler.getNickname());
         //Event logout khi tắt window
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                StartClient.socketHandler.logout();
+                StartClient.clientSocketHandler.logout();
             }
         });
 
@@ -42,24 +42,24 @@ public class MainMenu extends JFrame {
     }
 
     private void btnLogout(ActionEvent e) {
-        StartClient.socketHandler.logout();
+        StartClient.clientSocketHandler.logout();
     }
 
     private void btnCancelPairUp(ActionEvent e) {
-        StartClient.socketHandler.cancelPairUp();
+        StartClient.clientSocketHandler.cancelPairUp();
     }
 
     private void btnDecline(ActionEvent e) {
-        StartClient.socketHandler.declinePairUp();
+        StartClient.clientSocketHandler.declinePairUp();
     }
 
     private void btnAccept(ActionEvent e) {
         setDisplayState(MainMenuStatus.WAITING_PARTNER_ACCEPT);
-        StartClient.socketHandler.acceptPairUp();
+        StartClient.clientSocketHandler.acceptPairUp();
     }
 
     private void btnPairUp(ActionEvent e) {
-        StartClient.socketHandler.pairUp();
+        StartClient.clientSocketHandler.pairUp();
     }
 
     private void initComponents() {
@@ -340,7 +340,7 @@ public class MainMenu extends JFrame {
     }
 
     private void startAcceptPairUpTimer() {
-        acceptPairUpTimer = new CountdownTimer(acceptWaitingTime);
+        acceptPairUpTimer = new Countdown(acceptWaitingTime);
         acceptPairUpTimer.setTimerCallBack(
                 // end callback
                 (Callable) () -> {
@@ -350,7 +350,7 @@ public class MainMenu extends JFrame {
 
                     // automatically decline if the time has passed without accepting
                     if (!isAcceptingPairUp) {
-                        StartClient.socketHandler.declinePairUp();
+                        StartClient.clientSocketHandler.declinePairUp();
                     }
                     return null;
                 },
@@ -371,7 +371,7 @@ public class MainMenu extends JFrame {
     }
 
     private void startWaitingPairUpTimer() {
-        waitingPairUpTimer = new CountdownTimer(2 * 60); // 2 phút
+        waitingPairUpTimer = new Countdown(2 * 60); // 2 phút
         AtomicInteger dotCount = new AtomicInteger(1);
         AtomicReference<String> dot = new AtomicReference<>(".");
         waitingPairUpTimer.setTimerCallBack(

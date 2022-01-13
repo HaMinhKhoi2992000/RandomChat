@@ -13,49 +13,46 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketHandler {
+public class ClientSocketHandler {
     private Socket socket;
     private ObjectOutput out;
     private ObjectInput in;
 
     String nickname = null; // lưu nickname hiện tại
 
-    Thread readThread = null;
+    Thread thread = null;
 
     public boolean connect(String hostname, int port) {
         try {
             // Khởi tạo kết nối với port của serverSocket
             socket = new Socket(hostname, port);
-            System.out.println("Ket noi den " + hostname + ":" + port + " co localport la " + socket.getLocalPort());
+            System.out.println("Ket noi den " + hostname + ":" +
+                    port + " co localport la " + socket.getLocalPort());
+
+            // đóng thread cũ nếu có
+            if (thread != null && thread.isAlive()) {
+                thread.interrupt();
+            }
 
             // Nhận input và output stream
             this.out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             this.out.flush();
             this.in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
-            // đóng readThread cũ nếu có
-            if (readThread != null && readThread.isAlive()) {
-                readThread.interrupt();
-            }
+            //thread lắng nghe server
+            thread = new Thread(this::read);
+            thread.start();
 
-            //readThread lắng nghe server
-            readThread = new Thread(this::read);
-            readThread.start();
-
-            // connect successfully
             return true;
-
         } catch (IOException e) {
-            // connect failed
             return false;
         }
     }
 
     private void read() {
-        boolean isRunning = true;
         Data receivedData;
         String receivedContent = null;
-
+        boolean isRunning = true;
         try {
             while (isRunning) {
                 receivedData = (Data) in.readObject();
@@ -68,7 +65,21 @@ public class SocketHandler {
                         case LOGIN:
                             handleLogin(receivedContent);
                             break;
+                        case JOIN_ROOM:
+                            handleJoinChatRoom(receivedContent);
+                            break;
 
+                        case CHAT_MESSAGE:
+                            handleChatMessage(receivedContent);
+                            break;
+
+                        case LEAVE_ROOM:
+                            handleLeaveChatRoom(receivedContent);
+                            break;
+
+                        case CLOSE_ROOM:
+                            handleCloseChatRoom(receivedContent);
+                            break;
                         case PAIR_UP_WAITING:
                             handlePairUpWaiting(receivedContent);
                             break;
@@ -85,22 +96,6 @@ public class SocketHandler {
                             handlePairUpResult(receivedContent);
                             break;
 
-                        case JOIN_CHAT_ROOM:
-                            handleJoinChatRoom(receivedContent);
-                            break;
-
-                        case CHAT_MESSAGE:
-                            handleChatMessage(receivedContent);
-                            break;
-
-                        case LEAVE_CHAT_ROOM:
-                            handleLeaveChatRoom(receivedContent);
-                            break;
-
-                        case CLOSE_CHAT_ROOM:
-                            handleCloseChatRoom(receivedContent);
-                            break;
-
                         case LOGOUT:
                             handleLogout(receivedContent);
                             break;
@@ -113,7 +108,7 @@ public class SocketHandler {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(SocketHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientSocketHandler.class.getName()).log(Level.SEVERE, null, ex);
             isRunning = false;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -269,7 +264,7 @@ public class SocketHandler {
     }
 
     public void leaveChatRoom() {
-        sendData(DataType.LEAVE_CHAT_ROOM, null);
+        sendData(DataType.LEAVE_ROOM, null);
     }
 
     public void logout() {

@@ -27,7 +27,7 @@ public class ChatRoom extends JFrame {
     public ChatRoom() {
         initComponents();
         txtChatArea.setContentType( "text/html" );
-        setTitle("Phòng trò chuyện - Nickname của bạn " + StartClient.socketHandler.getNickname());
+        setTitle("Phòng trò chuyện - Nickname của bạn " + StartClient.clientSocketHandler.getNickname());
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -35,7 +35,7 @@ public class ChatRoom extends JFrame {
                 if (JOptionPane.showConfirmDialog(ChatRoom.this,
                         "Xác nhận thoát phòng ?", "Thoát phòng?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    StartClient.socketHandler.leaveChatRoom();
+                    StartClient.clientSocketHandler.leaveChatRoom();
                 }
             }
         });
@@ -83,7 +83,7 @@ public class ChatRoom extends JFrame {
         if(!content.equals("")) {
             Message message = new Message(you, partner, content);
             txtInput.setText("");
-            StartClient.socketHandler.sendChatMessage(message);
+            StartClient.clientSocketHandler.sendChatMessage(message);
 
 
             try {

@@ -52,8 +52,6 @@ public class StartServer {
                     isTurnOff = true;
                 }
             }
-
-            System.out.println("Shut down executor...");
             executor.shutdownNow();
         } catch (IOException ioException) {
             ioException.printStackTrace();

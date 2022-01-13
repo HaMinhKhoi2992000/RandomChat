@@ -39,7 +39,7 @@ public class ClientManager {
         return null;
     }
 
-    public void removeRejectedClient (String nickname) {
+    public void removeRefusedClient(String nickname) {
         for (ClientThread clientThread : clientThreads) {
             if (clientThread.getRefusedClients().contains(nickname)) {
                 clientThread.getRefusedClients().remove(nickname);
@@ -50,15 +50,14 @@ public class ClientManager {
     public ClientThread findWaitingClient(ClientThread currentClientThread, Set<String> excludedNicknames) {
         for (ClientThread clientThread : clientThreads) {
             if (clientThread.isWaiting() &&  clientThread != currentClientThread ) {
-                if (excludedNicknames.contains(clientThread.getNickname()))
+                if (clientThread.getRefusedClients().contains(currentClientThread.getNickname()))
                     continue;
-                else if (clientThread.getRefusedClients().contains(currentClientThread.getNickname()))
+                else if (excludedNicknames.contains(clientThread.getNickname()))
                     continue;
                 else
                     return clientThread;
             }
         }
-
         return null;
     }
 }

@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import client.StartClient;
-import net.miginfocom.swing.*;
+import shared.utils.ValidateUtil;
 
 /**
  * @author Khoi Ha
@@ -22,7 +22,7 @@ public class Login extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                StartClient.socketHandler.exit();
+                StartClient.clientSocketHandler.exit();
             }
         });
 
@@ -45,17 +45,16 @@ public class Login extends JFrame {
     }
 
     private void btnLogin(ActionEvent e) {
-        // TODO add your code here
         String nickname = txtNickname.getText();
-        System.out.println("run");
         if (nickname.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập nickname của bạn", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        } else if (nickname.length() > 20) {
-            JOptionPane.showMessageDialog(this, "Nickname không được đặt quá 20 ký tự", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Hãy nhập nickname bạn muốn", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else if (nickname.length() > 25) {
+            JOptionPane.showMessageDialog(this, "Nickname của bạn quá dài", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else if (!ValidateUtil.isValidName(nickname, true).isEmpty()){
+            JOptionPane.showMessageDialog(this, "Nickname không hợp lệ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            // Chờ serverSocket kiểm tra đăng nhập
-            setLoading(true, "Đang xử lý...");
-            StartClient.socketHandler.login(nickname);
+            // Chờ server kiểm tra login
+            StartClient.clientSocketHandler.login(nickname);
         }
     }
 
