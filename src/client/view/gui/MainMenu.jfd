@@ -1,0 +1,172 @@
+JFDML JFormDesigner: "7.0.5.0.404" Java: "11.0.11" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class javax.swing.BoxLayout ) {
+			"axis": 1
+		} ) {
+			name: "this"
+			"minimumSize": new java.awt.Dimension( 450, 420 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "pnlLogout"
+				"preferredSize": new java.awt.Dimension( 95, 50 )
+				"minimumSize": new java.awt.Dimension( 95, 20 )
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnLogout"
+					"text": "Thoát"
+					"border": new javax.swing.border.MatteBorder( 1, 1, 1, 1, sfield java.awt.Color lightGray )
+					"borderPainted": false
+					"background": new java.awt.Color( 255, 255, 255, 255 )
+					"focusPainted": false
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnLogout", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 80
+					"x": 15
+					"y": 15
+					"height": 30
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "pnlHeader"
+				"preferredSize": new java.awt.Dimension( 0, 50 )
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				"minimumSize": new java.awt.Dimension( 450, 30 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblTitle"
+					"text": "Chat với người lạ"
+					"horizontalAlignment": 0
+					"foreground": new java.awt.Color( 204, 204, 204, 255 )
+					"font": new java.awt.Font( "Tahoma", 1, 16 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 0
+					"y": 10
+					"width": 450
+					"height": 30
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) {
+				"autoSize": false
+			} ) {
+				name: "pnlWaiting"
+				"preferredSize": new java.awt.Dimension( 0, 160 )
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblWaiting"
+					"text": "Đang tìm kiếm..."
+					"foreground": &Color0 new java.awt.Color( 255, 255, 255, 255 )
+					"horizontalAlignment": 0
+					"font": &Font0 new java.awt.Font( "Tahoma", 1, 14 )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 0
+					"y": 15
+					"width": 450
+					"height": 42
+				} )
+				add( new FormComponent( "javax.swing.JProgressBar" ) {
+					name: "pgbLoading"
+					"visible": false
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 150
+					"y": 70
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnCancelPairUp"
+					"text": "Hủy"
+					"background": new java.awt.Color( 255, 255, 255, 255 )
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"borderPainted": false
+					"focusPainted": false
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnCancelPairUp", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 175
+					"y": 95
+					"width": 100
+					"height": 25
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "pnlPartnerFound"
+				"minimumSize": new java.awt.Dimension( 0, 20 )
+				"preferredSize": new java.awt.Dimension( 0, 120 )
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnDecline"
+					"text": "Từ chối"
+					"background": new java.awt.Color( 255, 0, 51, 255 )
+					"foreground": sfield java.awt.Color lightGray
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"borderPainted": false
+					"focusPainted": false
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnDecline", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 125
+					"y": 65
+					"width": 85
+					"height": 30
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnAccept"
+					"text": "Chấp nhận"
+					"background": new java.awt.Color( 51, 153, 0, 255 )
+					"foreground": new java.awt.Color( 204, 204, 204, 255 )
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"borderPainted": false
+					"focusPainted": false
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnAccept", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 245
+					"y": 65
+					"width": 95
+					"height": 30
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblFoundPartner"
+					"text": "Bắt đầu chat ?"
+					"foreground": #Color0
+					"horizontalAlignment": 0
+					"font": #Font0
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"width": 450
+					"height": 17
+					"x": 0
+					"y": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblPairUpCountdown"
+					"text": "20s"
+					"foreground": new java.awt.Color( 255, 255, 255, 255 )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 205
+					"y": 25
+					"width": 35
+					"height": 25
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+				name: "pnlPairUp"
+				"preferredSize": new java.awt.Dimension( 0, 40 )
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnPairUp"
+					"text": "Ghép cặp"
+					"borderPainted": false
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"background": new java.awt.Color( 255, 255, 255, 255 )
+					"focusPainted": false
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnPairUp", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+					"x": 175
+					"y": 5
+					"width": 105
+					"height": 30
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 450, 475 )
+		} )
+	}
+}

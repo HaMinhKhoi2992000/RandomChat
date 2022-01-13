@@ -1,10 +1,7 @@
 package client;
 
 import client.controller.SocketHandler;
-import client.view.gui.ChatRoomGUI;
-import client.view.gui.Login;
-import client.view.gui.LoginGUI;
-import client.view.gui.MainMenuGUI;
+import client.view.gui.*;
 import client.view.guiEnums.GUIName;
 
 import javax.swing.*;
@@ -22,7 +19,7 @@ public class StartClient {
     private int port = 5003;
 
     public static Login loginGUI;
-    public static MainMenuGUI mainMenuGUI;
+    public static MainMenu mainMenuGUI;
     public static ChatRoomGUI chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
@@ -52,7 +49,7 @@ public class StartClient {
 
     public void initGUIs() {
         loginGUI = new Login();
-        mainMenuGUI = new MainMenuGUI();
+        mainMenuGUI = new MainMenu();
         chatRoomGUI = new ChatRoomGUI();
     }
 
@@ -65,7 +62,7 @@ public class StartClient {
                     break;
 
                 case MAIN_MENU:
-                    mainMenuGUI = new MainMenuGUI();
+                    mainMenuGUI = new MainMenu();
                     mainMenuGUI.setVisible(true);
                     break;
 

@@ -184,7 +184,6 @@ public class MainMenuGUI extends JFrame {
         btnPairUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("CLicked");
                 StartClient.socketHandler.pairUp();
             }
         });
