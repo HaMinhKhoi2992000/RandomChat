@@ -42,8 +42,8 @@ public class Countdown {
         executor.shutdownNow();
     }
 
-    public void setTimerCallBack(Callable endCallback, Callable tickCallback, int _tickInterval) {
-        tickInterval = _tickInterval;
+    public void setTimerCallBack(Callable endCallback, Callable tickCallback, int tickInterval) {
+        this.tickInterval = tickInterval;
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -52,7 +52,7 @@ public class Countdown {
                     currentTick--;
 
                     // sau tickInterval giây, sẽ gọi 1 lần tick callback
-                    if (tickCallback != null && (timeLimit - currentTick) % tickInterval == 0) {
+                    if (tickCallback != null && (timeLimit - currentTick) % Countdown.this.tickInterval == 0) {
                         try {
                             executor.submit(tickCallback);
                         } catch (Exception ex) {
