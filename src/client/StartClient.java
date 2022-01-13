@@ -2,6 +2,7 @@ package client;
 
 import client.controller.SocketHandler;
 import client.view.gui.ChatRoomGUI;
+import client.view.gui.Login;
 import client.view.gui.LoginGUI;
 import client.view.gui.MainMenuGUI;
 import client.view.guiEnums.GUIName;
@@ -20,15 +21,15 @@ public class StartClient {
     private String hostname = "localhost";
     private int port = 5003;
 
-    public static LoginGUI loginGUI;
+    public static Login loginGUI;
     public static MainMenuGUI mainMenuGUI;
     public static ChatRoomGUI chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
         // Customize LookAndFeel UI
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch(Exception ignored){}
+//        try {
+//            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+//        } catch(Exception ignored){}
         initGUIs();
     }
 
@@ -50,7 +51,7 @@ public class StartClient {
     }
 
     public void initGUIs() {
-        loginGUI = new LoginGUI();
+        loginGUI = new Login();
         mainMenuGUI = new MainMenuGUI();
         chatRoomGUI = new ChatRoomGUI();
     }
@@ -59,7 +60,7 @@ public class StartClient {
         if (guiName != null) {
             switch (guiName) {
                 case LOGIN:
-                    loginGUI = new LoginGUI();
+                    loginGUI = new Login();
                     loginGUI.setVisible(true);
                     break;
 

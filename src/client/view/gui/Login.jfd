@@ -1,0 +1,89 @@
+JFDML JFormDesigner: "7.0.5.0.404" Java: "11.0.11" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Login"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "PanelBody"
+				"background": new java.awt.Color( 51, 51, 51, 255 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblLogin"
+					"text": "Đăng nhập"
+					"horizontalAlignment": 0
+					"preferredSize": new java.awt.Dimension( 58, 50 )
+					"font": new java.awt.Font( "Segoe UI", 0, 16 )
+					"foreground": new java.awt.Color( 255, 255, 255, 255 )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+					name: "panelContent"
+					"background": new java.awt.Color( 51, 51, 51, 255 )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Nhập nick name của bạn:"
+						"font": new java.awt.Font( "Segoe UI", 0, 14 )
+						"alignmentX": 0.5f
+						"border": new javax.swing.border.EmptyBorder( 0, 10, 0, 0 )
+						"foreground": new java.awt.Color( 255, 255, 255, 255 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 398
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "txtNickname"
+						"border": new javax.swing.border.CompoundBorder( new javax.swing.border.MatteBorder( 0, 0, 2, 0, sfield java.awt.Color white ), new javax.swing.border.EmptyBorder( 0, 10, 0, 0 ) )
+						"background": sfield java.awt.Color darkGray
+						"foreground": new java.awt.Color( 255, 255, 255, 255 )
+						"font": new java.awt.Font( "Tahoma", 0, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 10
+						"y": 35
+						"width": 375
+						"height": 25
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+						name: "vSpacer1"
+						"background": new java.awt.Color( 51, 51, 51, 255 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 5
+						"y": 150
+						"height": 30
+						"width": 395
+					} )
+					add( new FormComponent( "javax.swing.JProgressBar" ) {
+						name: "pgbLoading"
+						"visible": false
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 135
+						"y": 85
+						"width": 130
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnLogin"
+						"text": "Đăng nhập"
+						"background": new java.awt.Color( 255, 255, 255, 255 )
+						"foreground": sfield java.awt.Color darkGray
+						"border": new javax.swing.border.MatteBorder( 1, 1, 1, 1, sfield java.awt.Color white )
+						"borderPainted": false
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnLogin", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 135
+						"y": 100
+						"width": 130
+						"height": 28
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 260 )
+		} )
+	}
+}

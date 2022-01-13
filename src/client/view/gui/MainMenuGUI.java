@@ -19,7 +19,7 @@ public class MainMenuGUI extends JFrame {
     private JPanel pnlStrangerFound;
     private JButton btnDecline;
     private JButton btnAccept;
-    private JLabel lblFoundStranger;
+    private JLabel lblFoundPartner;
     private JLabel lblPairUpCountdown;
     private JPanel pnlPairUp;
     private JButton btnPairUp;
@@ -130,11 +130,11 @@ public class MainMenuGUI extends JFrame {
     }
 
     private void startWaitingPairUpTimer() {
-        waitingPairUpTimer = new CountdownTimer(5 * 60); // 5 min
+        waitingPairUpTimer = new CountdownTimer(2 * 60); // 2 phút
         waitingPairUpTimer.setTimerCallBack(
                 (Callable) () -> {
                     setDisplayState(MainMenuState.DEFAULT);
-                    JOptionPane.showMessageDialog(this, "Rất tiếc! Không tìm thấy ai để chat.");
+                    JOptionPane.showMessageDialog(this, "Buồn ! Không có ai để chat cùng cả");
                     return null;
                 },
                 (Callable) () -> {
@@ -156,9 +156,9 @@ public class MainMenuGUI extends JFrame {
         }
     }
 
-    public void foundStranger(String strangerNickname) {
+    public void foundPartner(String partnerNickname) {
         setDisplayState(MainMenuState.WAITING_ACCEPT);
-        lblFoundStranger.setText("Bắt đầu chat cùng " + strangerNickname + "?");
+        lblFoundPartner.setText("Ghép cặp với " + partnerNickname + "?");
     }
 
     private void initComponents() {

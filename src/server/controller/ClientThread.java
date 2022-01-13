@@ -45,11 +45,11 @@ public class ClientThread implements Runnable {
                    receivedContent = receivedData.getContent();
                     switch (receivedData.getDataType()) {
                         case LOGIN:
-                            onReceiveLogin(receivedContent);
+                            handleLogin(receivedContent);
                             break;
 
                         case PAIR_UP:
-                            onReceivePairUp(receivedContent);
+                            handlePairUp(receivedContent);
                             break;
 
                         case CANCEL_PAIR_UP:
@@ -122,7 +122,7 @@ public class ClientThread implements Runnable {
         }
     }
 
-    private void onReceiveLogin(String received) {
+    private void handleLogin(String received) {
         String status = "failed;";
 
         //Tìm xem có ClientThread nào trong ClientManager dùng nickname này chưa, nếu chưa thì login thành công
@@ -138,7 +138,7 @@ public class ClientThread implements Runnable {
         }
     }
 
-    private void onReceivePairUp(String received) {
+    private void handlePairUp(String received) {
         // Tìm một người khác đang ghép cặp
         ClientThread partner = StartServer.clientManager.findWaitingClient(this, refusedClients);
 
@@ -155,7 +155,7 @@ public class ClientThread implements Runnable {
             this.isWaiting = false;
             partner.isWaiting = false;
 
-            // lưu email đối thủ để dùng khi serverSocket nhận được result-pair-match
+            // lưu socket của đối phương để dùng khi serverSocket nhận được result-pair-match
             this.partner = partner;
             partner.partner = this;
 
@@ -177,7 +177,7 @@ public class ClientThread implements Runnable {
         // save accept pair status
         this.acceptPairUp = received;
 
-        // if stranger has left
+        // if partner has left
         if (partner == null) {
             sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.PARTNER_LEFT);
             return;

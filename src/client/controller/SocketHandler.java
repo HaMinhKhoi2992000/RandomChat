@@ -20,7 +20,7 @@ public class SocketHandler {
 
     String nickname = null; // lưu nickname hiện tại
 
-    Thread listener = null;
+    Thread readThread = null;
 
     public boolean connect(String hostname, int port) {
         try {
@@ -33,14 +33,14 @@ public class SocketHandler {
             this.out.flush();
             this.in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
-            // close old listener
-            if (listener != null && listener.isAlive()) {
-                listener.interrupt();
+            // close old readThread
+            if (readThread != null && readThread.isAlive()) {
+                readThread.interrupt();
             }
 
             //listen to serverSocket
-            listener = new Thread(this::listen);
-            listener.start();
+            readThread = new Thread(this::read);
+            readThread.start();
 
             // connect successfully
             return true;
@@ -51,7 +51,7 @@ public class SocketHandler {
         }
     }
 
-    private void listen() {
+    private void read() {
         boolean isRunning = true;
         Data receivedData;
         String receivedContent = null;
@@ -70,44 +70,43 @@ public class SocketHandler {
                             break;
 
                         case PAIR_UP_WAITING:
-                            onReceivePairUpWaiting(receivedContent);
+                            handlePairUpWaiting(receivedContent);
                             break;
 
                         case CANCEL_PAIR_UP:
-                            onReceiveCancelPairUp(receivedContent);
-                            System.out.println(receivedContent);
+                            handleCancelPairUp(receivedContent);
                             break;
 
                         case REQUEST_PAIR_UP:
-                            onReceiveRequestPairUp(receivedContent);
+                            handleRequestPairUp(receivedContent);
                             break;
 
                         case RESULT_PAIR_UP:
-                            onReceiveResultPairUp(receivedContent);
+                            handlePairUpResult(receivedContent);
                             break;
 
                         case JOIN_CHAT_ROOM:
-                            onReceiveJoinChatRoom(receivedContent);
+                            handleJoinChatRoom(receivedContent);
                             break;
 
                         case CHAT_MESSAGE:
-                            onReceiveChatMessage(receivedContent);
+                            handleChatMessage(receivedContent);
                             break;
 
                         case LEAVE_CHAT_ROOM:
-                            onReceiveLeaveChatRoom(receivedContent);
+                            handleLeaveChatRoom(receivedContent);
                             break;
 
                         case CLOSE_CHAT_ROOM:
-                            onReceiveCloseChatRoom(receivedContent);
+                            handleCloseChatRoom(receivedContent);
                             break;
 
                         case LOGOUT:
-                            onReceiveLogout(receivedContent);
+                            handleLogout(receivedContent);
                             break;
 
                         case EXIT:
-                            onReceiveExit(receivedContent);
+                            handleExit(receivedContent);
                             isRunning = false;
                             break;
                     }
@@ -165,13 +164,7 @@ public class SocketHandler {
 
     private void sendData(DataType dataType, String content) {
         Data data;
-
-        if (content != null) {
-            data = new Data(dataType, content);
-        } else {
-            data = new Data(dataType, content);
-        }
-
+        data = new Data(dataType, content);
         try {
             out.writeObject(data);
             out.flush();
@@ -180,7 +173,7 @@ public class SocketHandler {
         }
     }
 
-    private void onReceiveResultPairUp(String received) {
+    private void handlePairUpResult(String received) {
         String[] splitted = received.split(";");
         String status = splitted[0];
 
@@ -206,39 +199,39 @@ public class SocketHandler {
         }
     }
 
-    private void onReceivePairUpWaiting(String received) {
+    private void handlePairUpWaiting(String received) {
         StartClient.mainMenuGUI.setDisplayState(MainMenuState.FINDING_PARTNER);
     }
 
-    private void onReceiveCancelPairUp(String received) {
+    private void handleCancelPairUp(String received) {
         StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
     }
 
-    private void onReceiveRequestPairUp(String received) {
+    private void handleRequestPairUp(String received) {
         // show stranger found state
-        StartClient.mainMenuGUI.foundStranger(received);
+        StartClient.mainMenuGUI.foundPartner(received);
     }
 
-    private void onReceiveJoinChatRoom(String received) {
+    private void handleJoinChatRoom(String received) {
         // change GUI
         StartClient.closeGUI(GUIName.MAIN_MENU);
         StartClient.openGUI(GUIName.CHAT_ROOM);
         StartClient.chatRoomGUI.setClients(this.nickname, received);
     }
 
-    private void onReceiveChatMessage(String received) {
+    private void handleChatMessage(String received) {
         // convert received JSON message to Message
         Message message = Message.parse(received);
         StartClient.chatRoomGUI.addChatMessage(message);
     }
 
-    private void onReceiveLeaveChatRoom(String received) {
+    private void handleLeaveChatRoom(String received) {
         // change GUI
         StartClient.closeGUI(GUIName.CHAT_ROOM);
         StartClient.openGUI(GUIName.MAIN_MENU);
     }
 
-    private void onReceiveCloseChatRoom(String received) {
+    private void handleCloseChatRoom(String received) {
         // change GUI
         StartClient.closeGUI(GUIName.CHAT_ROOM);
         StartClient.openGUI(GUIName.MAIN_MENU);
@@ -251,7 +244,7 @@ public class SocketHandler {
         );
     }
 
-    private void onReceiveLogout(String received) {
+    private void handleLogout(String received) {
         // xóa nickname
         this.nickname = null;
 
@@ -260,7 +253,7 @@ public class SocketHandler {
         StartClient.openGUI(GUIName.LOGIN);
     }
 
-    private void onReceiveExit(String received) {
+    private void handleExit(String received) {
         // đóng tất cả GUIs
         StartClient.closeAllGUIs();
     }
