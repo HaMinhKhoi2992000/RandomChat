@@ -7,7 +7,6 @@ public enum DataType {
     RESULT_PAIR_UP,
     JOIN_ROOM,
     CLOSE_ROOM,
-    ERROR,
 
     //    Client Request
     LOGIN,

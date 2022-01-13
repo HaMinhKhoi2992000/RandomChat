@@ -26,10 +26,6 @@ public class ClientManager {
         return false;
     }
 
-    public int getSize() {
-        return clientThreads.size();
-    }
-
     public ClientThread find(String nickname) {
         for (ClientThread clientThread : clientThreads) {
             if (clientThread.getNickname() != null && clientThread.getNickname().equals(nickname)) {

@@ -154,7 +154,7 @@ public class ClientThread implements Runnable {
     }
 
     private void handleCancelPairUp(String received) {
-        // gỡ cờ đang đợi ghép cặp
+        // Set trạng thái chờ ghép cặp false
         this.isWaiting = false;
 
         // báo cho client để tắt giao diện đang đợi ghép cặp
@@ -162,25 +162,22 @@ public class ClientThread implements Runnable {
     }
 
     private void handlePairUpResponse(String received) {
-        // save accept pair status
+        // Lưu lại trạng thái acceptPair
         this.acceptPairUp = received;
 
-        // if partner has left
+        // Nếu người kia thoát rồi
         if (partner == null) {
             sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.PARTNER_LEFT);
             return;
         }
 
-        // if one decline
+        // Nếu có 1 người từ chối
         if (received.equals("no")) {
-            // if both have no response (both will decline)
-            // check the rejected list of the stranger to avoid sending the rejection response twice
-            // if this client is on the stranger's rejected list, it means that the stranger refused first
             if (!this.partner.getRefusedClients().contains(this.nickname)) {
-                // add rejected client to list
+                // Thêm vào danh sách đã từ chối (để nếu có ghép tiếp thì sẽ tránh không gặp nữa)
                 this.refusedClients.add(partner.getNickname());
 
-                // reset acceptPairUpStatus
+                // reset trạng thái pair
                 this.acceptPairUp = "";
                 partner.acceptPairUp = "";
 
@@ -190,29 +187,19 @@ public class ClientThread implements Runnable {
             }
         }
 
-        // if both accept
+        // Nếu cả 2 accept
         if (received.equals("yes") && partner.acceptPairUp.equals("yes")) {
             // send success pair match
             this.sendData(DataType.RESULT_PAIR_UP, "success");
             partner.sendData(DataType.RESULT_PAIR_UP, "success");
 
-            // send join chat room status to client
+            // Cho 2 client join room
             sendData(DataType.JOIN_ROOM, partner.nickname);
             partner.sendData(DataType.JOIN_ROOM, this.nickname);
 
-            // reset acceptPairMatchStatus
+            // reset trạng thái pair
             this.acceptPairUp = "";
             partner.acceptPairUp = "";
-        }
-    }
-
-    private void handleChatMessage(String received) {
-        Message message = Message.parse(received);
-        ClientThread partner = StartServer.clientManager.find(message.getRecipient());
-
-        if (partner != null) {
-            // send message to partner
-            partner.sendData(DataType.CHAT_MESSAGE, received);
         }
     }
 
@@ -225,6 +212,15 @@ public class ClientThread implements Runnable {
         this.partner.sendData(DataType.CLOSE_ROOM, this.nickname + " đã thoát phòng");
 
         sendData(DataType.LEAVE_ROOM, null);
+    }
+
+    private void handleChatMessage(String received) {
+        Message message = Message.parse(received);
+        ClientThread partner = StartServer.clientManager.find(message.getReceiver());
+        if (partner != null) {
+            // Gửi tin cho người kia
+            partner.sendData(DataType.CHAT_MESSAGE, received);
+        }
     }
 
     private void handleLogout(String received) {

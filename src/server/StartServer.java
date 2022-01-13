@@ -14,13 +14,11 @@ public class StartServer {
     public static ServerSocket serverSocket;
     public static boolean isTurnOff = false;
     public static volatile ClientManager clientManager;
-
+    public static int port = 5003;
     private void start(){
         try {
-            int port = 5003;
             serverSocket = new ServerSocket(port);
-            System.out.println("Server is running at port " + port + ".");
-
+            System.out.println("Running server at port " + port + "...");
 
             // Tạo threadpool
             ThreadPoolExecutor executor = new ThreadPoolExecutor(

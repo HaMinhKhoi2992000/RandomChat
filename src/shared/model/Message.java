@@ -5,22 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Message implements Serializable {
-    private String sender;
-    private String recipient;
-    private String content;
     private Date date;
+    private String sender;
+    private String receiver;
+    private String content;
+
 
     public Message() {
         date = new Date();
     }
 
-    public Message(String sender, String recipient, String content) {
+    public Message(String sender, String receiver, String content) {
         this.sender = sender;
-        this.recipient = recipient;
+        this.receiver = receiver;
         this.content = content;
         date = new Date();
     }
@@ -33,12 +33,12 @@ public class Message implements Serializable {
         this.sender = sender;
     }
 
-    public String getRecipient() {
-        return recipient;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getContent() {
@@ -61,7 +61,7 @@ public class Message implements Serializable {
     public String toString() {
         return "Message{" +
                 "sender='" + sender + '\'' +
-                ", recipient='" + recipient + '\'' +
+                ", receiver='" + receiver + '\'' +
                 ", content='" + content + '\'' +
                 ", date=" + date +
                 '}';

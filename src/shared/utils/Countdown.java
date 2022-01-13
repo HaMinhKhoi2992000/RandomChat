@@ -15,10 +15,10 @@ public class Countdown {
 
     boolean isPaused = false;
 
-    public Countdown(int _timeLimit) {
-        timeLimit = _timeLimit;
-        currentTick = _timeLimit;
-        tickInterval = 1; // default is 1
+    public Countdown(int timeLimit) {
+        this.timeLimit = timeLimit;
+        currentTick = timeLimit;
+        tickInterval = 1;
         timer = new Timer();
         executor = Executors.newFixedThreadPool(2);
     }
