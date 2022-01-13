@@ -24,25 +24,6 @@ public class ChatRoom extends JFrame {
     private String partner;
     private HTMLDocument doc;
 
-    private String cssLocalMessage = "position:relative;\n" +
-            "max-width: 35%;\n" +
-            "margin: 1em 2em;\n" +
-            "color: white; \n" +
-            "padding:6px 12px;\n" +
-            "border-radius:25px;\n" +
-            "float: right;\n" +
-            "background: #3498DB;\n" +
-            "clear: both;";
-    private String cssRemoteMessage = "position:relative;\n" +
-            "max-width: 35%;\n" +
-            "padding:5px 10px;\n" +
-            "margin: 0.3em 2em;\n" +
-            "color:white; \n" +
-            "background: #26A65B;\n" +
-            "border-radius:25px;\n" +
-            "float: left;\n" +
-            "clear: both;";
-
     public ChatRoom() {
         initComponents();
         txtChatArea.setContentType( "text/html" );
