@@ -2,8 +2,6 @@ package shared.type;
 
 public enum DataType {
     //    Server Response
-    PUBLIC_KEY,
-    RECEIVED_SECRET_KEY,
     PAIR_UP_WAITING,
     REQUEST_PAIR_UP,
     RESULT_PAIR_UP,
@@ -13,7 +11,6 @@ public enum DataType {
 
     //    Client Request
     LOGIN,
-    SECRET_KEY,
     PAIR_UP,
     CANCEL_PAIR_UP,
     PAIR_UP_RESPONSE,

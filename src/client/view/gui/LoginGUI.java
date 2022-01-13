@@ -65,7 +65,7 @@ public class LoginGUI extends JFrame {
                     } else if (nickname.length() > 20) {
                         JOptionPane.showMessageDialog(pnlMain, "Nickname không được đặt quá 20 ký tự", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        // Chờ server kiểm tra đăng nhập
+                        // Chờ serverSocket kiểm tra đăng nhập
                         setLoading(true, "Đang xử lý...");
 
                         StartClient.socketHandler.login(nickname);
@@ -88,7 +88,7 @@ public class LoginGUI extends JFrame {
                 } else if (nickname.length() > 20) {
                     JOptionPane.showMessageDialog(pnlMain, "Nickname không được đặt quá 20 ký tự", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    // Chờ server kiểm tra đăng nhập
+                    // Chờ serverSocket kiểm tra đăng nhập
                     setLoading(true, "Đang xử lý...");
 
                     StartClient.socketHandler.login(nickname);

@@ -43,16 +43,9 @@ public class StartClient {
         }).start();
     }
 
-    private void onSuccess() {
-        // Kết nối thành công nhưng vẫn chờ server gửi thông báo đã nhận secret key
-        // Cho phép client đăng nhập khi nhận được phản hồi từ server
-
-        loginGUI.setLoading(true, "Đang chờ bảo mật...");;
-    }
-
-    private void onFailed(String failedMsg) {
+    private void onFailed(String failedMessage) {
         loginGUI.setLoading(false, null);
-        JOptionPane.showMessageDialog(loginGUI, failedMsg, "Lỗi kết nối", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(loginGUI, failedMessage, "Không thể kết nối đến server", JOptionPane.ERROR_MESSAGE);
         System.exit(0);
     }
 

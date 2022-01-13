@@ -4,58 +4,58 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class ClientManager {
-    ArrayList<Client> clients;
+    ArrayList<ClientThread> clientThreads;
 
     public ClientManager() {
-        clients = new ArrayList<>();
+        clientThreads = new ArrayList<>();
     }
 
-    public boolean add(Client client) {
-        if (!clients.contains(client)) {
-            clients.add(client);
+    public boolean add(ClientThread clientThread) {
+        if (!clientThreads.contains(clientThread)) {
+            clientThreads.add(clientThread);
             return true;
         }
         return true;
     }
 
-    public boolean remove(Client c) {
-        if (clients.contains(c)) {
-            clients.remove(c);
+    public boolean remove(ClientThread c) {
+        if (clientThreads.contains(c)) {
+            clientThreads.remove(c);
             return true;
         }
         return false;
     }
 
     public int getSize() {
-        return clients.size();
+        return clientThreads.size();
     }
 
-    public Client find(String nickname) {
-        for (Client client : clients) {
-            if (client.getNickname() != null && client.getNickname().equals(nickname)) {
-                return client;
+    public ClientThread find(String nickname) {
+        for (ClientThread clientThread : clientThreads) {
+            if (clientThread.getNickname() != null && clientThread.getNickname().equals(nickname)) {
+                return clientThread;
             }
         }
         return null;
     }
 
     public void removeRejectedClient (String nickname) {
-        for (Client client : clients) {
-            if (client.getRejectedClients().contains(nickname)) {
-                client.getRejectedClients().remove(nickname);
+        for (ClientThread clientThread : clientThreads) {
+            if (clientThread.getRefusedClients().contains(nickname)) {
+                clientThread.getRefusedClients().remove(nickname);
             }
         }
     }
 
-    public Client findWaitingClient(Client currentClient, Set<String> excludedNicknames) {
-        for (Client client : clients) {
-            if (client != currentClient && client.isWaiting()) {
-                if (excludedNicknames.contains(client.getNickname()))
+    public ClientThread findWaitingClient(ClientThread currentClientThread, Set<String> excludedNicknames) {
+        for (ClientThread clientThread : clientThreads) {
+            if (clientThread.isWaiting() &&  clientThread != currentClientThread ) {
+                if (excludedNicknames.contains(clientThread.getNickname()))
                     continue;
-                else if (client.getRejectedClients().contains(currentClient.getNickname()))
+                else if (clientThread.getRefusedClients().contains(currentClientThread.getNickname()))
                     continue;
                 else
-                    return client;
+                    return clientThread;
             }
         }
 

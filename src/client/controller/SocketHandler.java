@@ -7,17 +7,9 @@ import shared.model.Data;
 import shared.model.Message;
 import shared.type.DataType;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +24,7 @@ public class SocketHandler {
 
     public boolean connect(String hostname, int port) {
         try {
-            // Khởi tạo kết nối với port của server
+            // Khởi tạo kết nối với port của serverSocket
             socket = new Socket(hostname, port);
             System.out.println("Connected to " + hostname + ":" + port + ", localport: " + socket.getLocalPort());
 
@@ -46,7 +38,7 @@ public class SocketHandler {
                 listener.interrupt();
             }
 
-            //listen to server
+            //listen to serverSocket
             listener = new Thread(this::listen);
             listener.start();
 
@@ -74,7 +66,7 @@ public class SocketHandler {
 
                     switch (receivedData.getDataType()) {
                         case LOGIN:
-                            onReceiveLogin(receivedContent);
+                            handleLogin(receivedContent);
                             break;
 
                         case PAIR_UP_WAITING:
@@ -152,27 +144,27 @@ public class SocketHandler {
         }
     }
 
-    private void onReceiveLogin(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[0];
+    private void handleLogin(String received) {
+        String[] splitData = received.split(";");
+        String status = splitData[0];
 
         if (status.equals("failed")) {
-            String failedMsg = splitted[1];
+            String failedMsg = splitData[1];
             StartClient.loginGUI.onFailed(failedMsg);
 
         } else if (status.equals("success")) {
-            this.nickname = splitted[1];
+            this.nickname = splitData[1];
 
-            // tắt Login GUI khi client đăng nhập thành công
-            StartClient.closeGUI(GUIName.LOGIN);
-            // mở Main Menu GUI
             StartClient.openGUI(GUIName.MAIN_MENU);
+            // Đăng nhập thành công thì tắt login GUI
+            StartClient.closeGUI(GUIName.LOGIN);
+
+
         }
     }
 
     private void sendData(DataType dataType, String content) {
         Data data;
-        String encryptedContent = null;
 
         if (content != null) {
             data = new Data(dataType, content);
@@ -193,8 +185,8 @@ public class SocketHandler {
         String status = splitted[0];
 
         if (status.equals("failed")) {
-            String failedMsg = splitted[1];
-            int option = JOptionPane.showConfirmDialog(StartClient.mainMenuGUI, failedMsg + ". Tiếp tục ghép đôi?", "Ghép đôi thất bại",
+            String failMessage = splitted[1];
+            int option = JOptionPane.showConfirmDialog(StartClient.mainMenuGUI, failMessage + ". Tiếp tục ghép đôi?", "Ghép đôi thất bại",
                     JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 
             // stop pairing
@@ -215,7 +207,7 @@ public class SocketHandler {
     }
 
     private void onReceivePairUpWaiting(String received) {
-        StartClient.mainMenuGUI.setDisplayState(MainMenuState.FINDING_STRANGER);
+        StartClient.mainMenuGUI.setDisplayState(MainMenuState.FINDING_PARTNER);
     }
 
     private void onReceiveCancelPairUp(String received) {

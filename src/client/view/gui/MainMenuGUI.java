@@ -59,7 +59,7 @@ public class MainMenuGUI extends JFrame {
                 pnlStrangerFound.setVisible(false);
                 break;
 
-            case FINDING_STRANGER:
+            case FINDING_PARTNER:
                 startWaitingPairUpTimer();
                 stopAcceptPairUpTimer();
                 pnlStrangerFound.setVisible(false);
@@ -76,7 +76,7 @@ public class MainMenuGUI extends JFrame {
                 btnLogout.setEnabled(false);
                 break;
 
-            case WAITING_STRANGER_ACCEPT:
+            case WAITING_PARTNER_ACCEPT:
                 isAcceptingPairUp = true;
                 pnlWaiting.setVisible(false);
                 btnAccept.setEnabled(false);
@@ -192,7 +192,7 @@ public class MainMenuGUI extends JFrame {
         btnAccept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setDisplayState(MainMenuState.WAITING_STRANGER_ACCEPT);
+                setDisplayState(MainMenuState.WAITING_PARTNER_ACCEPT);
                 StartClient.socketHandler.acceptPairUp();
             }
         });

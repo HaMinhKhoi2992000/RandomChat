@@ -6,30 +6,24 @@ import shared.model.Message;
 import shared.type.DataType;
 import shared.type.StringMessage;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.Socket;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Client implements Runnable {
+public class ClientThread implements Runnable {
     private Socket clientSocket;
     private ObjectOutput out;
     private ObjectInput in;
 
     private String nickname;
-    Client partner;
-    private volatile Set<String> rejectedClients = new HashSet<>();
+    ClientThread partner;
+    private volatile Set<String> refusedClients = new HashSet<>();
 
     private String acceptPairUp = "";     // giá trị: "yes", "no", ""
     private boolean isWaiting = false;
 
-    public Client(Socket clientSocket) throws IOException {
+    public ClientThread(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
 
         this.out = new ObjectOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
@@ -48,9 +42,7 @@ public class Client implements Runnable {
                 receivedData = (Data) in.readObject();
 
                 if (receivedData != null) {
-//                    sendData(DataType.CANCEL_PAIR_UP, "HELLO");
                    receivedContent = receivedData.getContent();
-//                    System.out.println(receivedContent);
                     switch (receivedData.getDataType()) {
                         case LOGIN:
                             onReceiveLogin(receivedContent);
@@ -132,21 +124,23 @@ public class Client implements Runnable {
 
     private void onReceiveLogin(String received) {
         String status = "failed;";
-        Client existedClient = StartServer.clientManager.find(received);
 
-        if (existedClient == null) {
+        //Tìm xem có ClientThread nào trong ClientManager dùng nickname này chưa, nếu chưa thì login thành công
+        ClientThread existedClientThread = StartServer.clientManager.find(received);
+
+        //Data gửi đi có dạng status;nickname nếu thành công hoặc status;<thông báo lỗi> nếu thất bại
+        if (existedClientThread != null) {
+            sendData(DataType.LOGIN, status + StringMessage.NICKNAME_ALREADY_IN_USE);
+        } else {
             status = "success;";
             this.nickname = received;
-
             sendData(DataType.LOGIN, status + nickname);
-        } else {
-            sendData(DataType.LOGIN, status + StringMessage.NICKNAME_HAS_BEEN_USED);
         }
     }
 
     private void onReceivePairUp(String received) {
-        // Kiếm có ai khác đang đợi ghép cặp không
-        Client partner = StartServer.clientManager.findWaitingClient(this, rejectedClients);
+        // Tìm một người khác đang ghép cặp
+        ClientThread partner = StartServer.clientManager.findWaitingClient(this, refusedClients);
 
         if (partner == null) {
             // đặt cờ là đang đợi ghép cặp
@@ -161,7 +155,7 @@ public class Client implements Runnable {
             this.isWaiting = false;
             partner.isWaiting = false;
 
-            // lưu email đối thủ để dùng khi server nhận được result-pair-match
+            // lưu email đối thủ để dùng khi serverSocket nhận được result-pair-match
             this.partner = partner;
             partner.partner = this;
 
@@ -185,7 +179,7 @@ public class Client implements Runnable {
 
         // if stranger has left
         if (partner == null) {
-            sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.STRANGER_LEAVE);
+            sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.PARTNER_LEFT);
             return;
         }
 
@@ -194,17 +188,17 @@ public class Client implements Runnable {
             // if both have no response (both will decline)
             // check the rejected list of the stranger to avoid sending the rejection response twice
             // if this client is on the stranger's rejected list, it means that the stranger refused first
-            if (!this.partner.getRejectedClients().contains(this.nickname)) {
+            if (!this.partner.getRefusedClients().contains(this.nickname)) {
                 // add rejected client to list
-                this.rejectedClients.add(partner.getNickname());
+                this.refusedClients.add(partner.getNickname());
 
                 // reset acceptPairUpStatus
                 this.acceptPairUp = "";
                 partner.acceptPairUp = "";
 
                 // send data
-                this.sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.YOU_CHOOSE_NO);
-                partner.sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.STRANGER_CHOOSE_NO);
+                this.sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.YOU_REFUSE_PAIR);
+                partner.sendData(DataType.RESULT_PAIR_UP, "failed;" + StringMessage.PARTNER_REFUSE_PAIR);
             }
         }
 
@@ -226,7 +220,7 @@ public class Client implements Runnable {
 
     private void onReceiveChatMessage(String received) {
         Message message = Message.parse(received);
-        Client stranger = StartServer.clientManager.find(message.getRecipient());
+        ClientThread stranger = StartServer.clientManager.find(message.getRecipient());
 
         if (stranger != null) {
             // send message to stranger
@@ -236,8 +230,8 @@ public class Client implements Runnable {
 
     private void onReceiveLeaveChatRoom(String received) {
         // reset rejected clients of both
-        this.rejectedClients.clear();
-        this.partner.rejectedClients.clear();
+        this.refusedClients.clear();
+        this.partner.refusedClients.clear();
 
         // notify the stranger that you have exited
         this.partner.sendData(DataType.CLOSE_CHAT_ROOM, this.nickname + " đã thoát phòng");
@@ -253,7 +247,7 @@ public class Client implements Runnable {
         // reset all infos
         this.nickname = null;
         this.isWaiting = false;
-        this.rejectedClients.clear();
+        this.refusedClients.clear();
 
         sendData(DataType.LOGOUT, null);
     }
@@ -272,16 +266,16 @@ public class Client implements Runnable {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-    public Client getPartner() {
+    public ClientThread getPartner() {
         return partner;
     }
     public boolean isWaiting() {
         return isWaiting;
     }
-    public Set<String> getRejectedClients() {
-        return rejectedClients;
+    public Set<String> getRefusedClients() {
+        return refusedClients;
     }
-    public void setPartner(Client stranger) {
+    public void setPartner(ClientThread stranger) {
         this.partner = partner;
     }
 }
