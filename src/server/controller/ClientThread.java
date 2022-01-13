@@ -79,20 +79,8 @@ public class ClientThread implements Runnable {
                     }
                 }
             }
-//        } catch (InvalidAlgorithmParameterException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//            e.printStackTrace();
-//        } catch (IllegalBlockSizeException e) {
-//            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (BadPaddingException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -220,11 +208,11 @@ public class ClientThread implements Runnable {
 
     private void onReceiveChatMessage(String received) {
         Message message = Message.parse(received);
-        ClientThread stranger = StartServer.clientManager.find(message.getRecipient());
+        ClientThread partner = StartServer.clientManager.find(message.getRecipient());
 
-        if (stranger != null) {
-            // send message to stranger
-            stranger.sendData(DataType.CHAT_MESSAGE, received);
+        if (partner != null) {
+            // send message to partner
+            partner.sendData(DataType.CHAT_MESSAGE, received);
         }
     }
 

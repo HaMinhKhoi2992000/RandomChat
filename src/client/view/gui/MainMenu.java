@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import client.StartClient;
-import client.view.guiEnums.MainMenuState;
+import client.view.guiEnums.MainMenuStatus;
 import shared.utils.CountdownTimer;
 
 /**
@@ -38,7 +38,7 @@ public class MainMenu extends JFrame {
             }
         });
 
-        setDisplayState(MainMenuState.DEFAULT);
+        setDisplayState(MainMenuStatus.DEFAULT);
     }
 
     private void btnLogout(ActionEvent e) {
@@ -54,7 +54,7 @@ public class MainMenu extends JFrame {
     }
 
     private void btnAccept(ActionEvent e) {
-        setDisplayState(MainMenuState.WAITING_PARTNER_ACCEPT);
+        setDisplayState(MainMenuStatus.WAITING_PARTNER_ACCEPT);
         StartClient.socketHandler.acceptPairUp();
     }
 
@@ -297,7 +297,7 @@ public class MainMenu extends JFrame {
         btnPairUp.setEnabled(true);
     }
 
-    public void setDisplayState(MainMenuState state) {
+    public void setDisplayState(MainMenuStatus state) {
         // hiển thị tất cả components
         showAllComponents();
 
@@ -376,7 +376,7 @@ public class MainMenu extends JFrame {
         AtomicReference<String> dot = new AtomicReference<>(".");
         waitingPairUpTimer.setTimerCallBack(
                 (Callable) () -> {
-                    setDisplayState(MainMenuState.DEFAULT);
+                    setDisplayState(MainMenuStatus.DEFAULT);
                     JOptionPane.showMessageDialog(this, "Buồn ! Không có ai để chat cùng cả");
                     return null;
                 },
@@ -412,7 +412,7 @@ public class MainMenu extends JFrame {
     }
 
     public void foundPartner(String partnerNickname) {
-        setDisplayState(MainMenuState.WAITING_ACCEPT);
+        setDisplayState(MainMenuStatus.WAITING_ACCEPT);
         lblFoundPartner.setText("Ghép cặp với " + partnerNickname + "?");
     }
 

@@ -1,6 +1,6 @@
 package client.view.guiEnums;
 
-public enum MainMenuState {
+public enum MainMenuStatus {
     DEFAULT,
     FINDING_PARTNER,
     WAITING_ACCEPT,

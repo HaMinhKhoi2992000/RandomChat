@@ -46,7 +46,7 @@ public class ChatRoom extends JFrame {
         // Generate new line of txtMessage on CTRL + ENTER
         InputMap input = txtInput.getInputMap();
         KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
-        KeyStroke controlEnter = KeyStroke.getKeyStroke("control ENTER");
+        KeyStroke controlEnter = KeyStroke.getKeyStroke("shift ENTER");
         input.put(controlEnter, "insert-break");
         input.put(enter, "text-submit");
 

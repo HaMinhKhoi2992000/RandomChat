@@ -7,8 +7,6 @@ import client.view.guiEnums.GUIName;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class StartClient {
     private static Socket socket;
@@ -23,10 +21,6 @@ public class StartClient {
     public static ChatRoom chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
-        // Customize LookAndFeel UI
-//        try {
-//            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-//        } catch(Exception ignored){}
         initGUIs();
     }
 

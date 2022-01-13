@@ -21,17 +21,18 @@ public class StartServer {
             serverSocket = new ServerSocket(port);
             System.out.println("Server is running at port " + port + ".");
 
-            // Tạo client manager
-            clientManager = new ClientManager();
 
             // Tạo threadpool
             ThreadPoolExecutor executor = new ThreadPoolExecutor(
-                    10, // corePoolSize
-                    100, // maximumPoolSize
+                    8, // corePoolSize
+                    80, // maximumPoolSize
                     10, // thread timeout
                     TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(8) // queueCapacity
+                    new ArrayBlockingQueue<>(6) // queueCapacity
             );
+
+            // Tạo client manager
+            clientManager = new ClientManager();
 
             // Vòng lặp while lắng nghe và chấp nhận kết nối từ client.
             while (!isTurnOff) {

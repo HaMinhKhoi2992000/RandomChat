@@ -2,7 +2,7 @@ package client.controller;
 
 import client.StartClient;
 import client.view.guiEnums.GUIName;
-import client.view.guiEnums.MainMenuState;
+import client.view.guiEnums.MainMenuStatus;
 import shared.model.Data;
 import shared.model.Message;
 import shared.type.DataType;
@@ -26,19 +26,19 @@ public class SocketHandler {
         try {
             // Khởi tạo kết nối với port của serverSocket
             socket = new Socket(hostname, port);
-            System.out.println("Connected to " + hostname + ":" + port + ", localport: " + socket.getLocalPort());
+            System.out.println("Ket noi den " + hostname + ":" + port + " co localport la " + socket.getLocalPort());
 
             // Nhận input và output stream
             this.out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             this.out.flush();
             this.in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
-            // close old readThread
+            // đóng readThread cũ nếu có
             if (readThread != null && readThread.isAlive()) {
                 readThread.interrupt();
             }
 
-            //listen to serverSocket
+            //readThread lắng nghe server
             readThread = new Thread(this::read);
             readThread.start();
 
@@ -115,20 +115,6 @@ public class SocketHandler {
         } catch (IOException ex) {
             Logger.getLogger(SocketHandler.class.getName()).log(Level.SEVERE, null, ex);
             isRunning = false;
-//        } catch (InvalidAlgorithmParameterException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//            e.printStackTrace();
-//        } catch (IllegalBlockSizeException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (BadPaddingException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeySpecException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -184,7 +170,7 @@ public class SocketHandler {
 
             // stop pairing
             // reset display state of main menu
-            StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+            StartClient.mainMenuGUI.setDisplayState(MainMenuStatus.DEFAULT);
 
             if(option == JOptionPane.YES_OPTION) {
                 // continue pairing
@@ -193,18 +179,18 @@ public class SocketHandler {
             }
         } else if (status.equals("success")) {
             // reset display state of main menu
-            StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+            StartClient.mainMenuGUI.setDisplayState(MainMenuStatus.DEFAULT);
 
             System.out.println("Ghép đôi thành công");
         }
     }
 
     private void handlePairUpWaiting(String received) {
-        StartClient.mainMenuGUI.setDisplayState(MainMenuState.FINDING_PARTNER);
+        StartClient.mainMenuGUI.setDisplayState(MainMenuStatus.FINDING_PARTNER);
     }
 
     private void handleCancelPairUp(String received) {
-        StartClient.mainMenuGUI.setDisplayState(MainMenuState.DEFAULT);
+        StartClient.mainMenuGUI.setDisplayState(MainMenuStatus.DEFAULT);
     }
 
     private void handleRequestPairUp(String received) {
@@ -213,7 +199,7 @@ public class SocketHandler {
     }
 
     private void handleJoinChatRoom(String received) {
-        // change GUI
+        // Update giao diện và vào phòng chat
         StartClient.closeGUI(GUIName.MAIN_MENU);
         StartClient.openGUI(GUIName.CHAT_ROOM);
         StartClient.chatRoomGUI.setClients(this.nickname, received);
@@ -226,7 +212,7 @@ public class SocketHandler {
     }
 
     private void handleLeaveChatRoom(String received) {
-        // change GUI
+        // Update giao diện rời phòng chat
         StartClient.closeGUI(GUIName.CHAT_ROOM);
         StartClient.openGUI(GUIName.MAIN_MENU);
     }
@@ -239,22 +225,22 @@ public class SocketHandler {
         // show notification
         JOptionPane.showMessageDialog(
                 StartClient.mainMenuGUI,
-                "Kết thúc trò chuyện do " + received, "Đóng",
+                "Trò chuyện kết thúc, " + received, "đã thoát",
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
 
     private void handleLogout(String received) {
-        // xóa nickname
+        // Logout thì xóa nickname
         this.nickname = null;
 
-        // chuyển sang login GUI
+        // quay về giao diện login, đóng menu chính
         StartClient.closeGUI(GUIName.MAIN_MENU);
         StartClient.openGUI(GUIName.LOGIN);
     }
 
     private void handleExit(String received) {
-        // đóng tất cả GUIs
+        // Thoát thì đóng hết giao diện
         StartClient.closeAllGUIs();
     }
 
