@@ -20,7 +20,7 @@ public class StartClient {
 
     public static Login loginGUI;
     public static MainMenu mainMenuGUI;
-    public static ChatRoomGUI chatRoomGUI;
+    public static ChatRoom chatRoomGUI;
     public StartClient() {
         socketHandler = new SocketHandler();
         // Customize LookAndFeel UI
@@ -50,7 +50,7 @@ public class StartClient {
     public void initGUIs() {
         loginGUI = new Login();
         mainMenuGUI = new MainMenu();
-        chatRoomGUI = new ChatRoomGUI();
+        chatRoomGUI = new ChatRoom();
     }
 
     public static void openGUI(GUIName guiName) {
@@ -67,7 +67,7 @@ public class StartClient {
                     break;
 
                 case CHAT_ROOM:
-                    chatRoomGUI = new ChatRoomGUI();
+                    chatRoomGUI = new ChatRoom();
                     chatRoomGUI.setVisible(true);
                     break;
 
